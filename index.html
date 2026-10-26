@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f7d4f">
+  <title>Food Tracker</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <nav class="tabs">
+      <button data-view="log" class="active">Log</button>
+      <button data-view="foods">Foods</button>
+      <button data-view="targets">Targets</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Daily log -->
+    <section id="view-log" class="view active">
+      <div class="date-bar">
+        <button id="prev-day" aria-label="Previous day">&lsaquo;</button>
+        <input type="date" id="date">
+        <button id="next-day" aria-label="Next day">&rsaquo;</button>
+      </div>
+
+      <div class="card" id="summary"></div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>Food eaten</h2>
+          <button id="add-entry" class="primary">+ Add food</button>
+        </div>
+        <ul id="entries" class="list"></ul>
+      </div>
+
+      <details class="card">
+        <summary><h2>Micronutrients &amp; details</h2></summary>
+        <table id="details"></table>
+      </details>
+    </section>
+
+    <!-- Food library -->
+    <section id="view-foods" class="view">
+      <div class="card">
+        <div class="card-head">
+          <h2>My foods</h2>
+          <button id="new-food" class="primary">+ New food</button>
+        </div>
+        <input type="search" id="food-filter" placeholder="Search foods">
+        <ul id="food-list" class="list"></ul>
+      </div>
+    </section>
+
+    <!-- Targets & data -->
+    <section id="view-targets" class="view">
+      <form class="card" id="targets-form">
+        <h2>Daily targets</h2>
+        <div id="targets-fields" class="grid"></div>
+        <button type="submit" class="primary">Save targets</button>
+      </form>
+      <div class="card">
+        <h2>Data</h2>
+        <p class="muted">Everything is stored only in this browser. Export a backup to move it or keep it safe.</p>
+        <div class="row">
+          <button id="export">Export backup</button>
+          <label class="button">Import backup<input type="file" id="import" accept="application/json" hidden></label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Log an entry -->
+  <dialog id="entry-dialog">
+    <form method="dialog" id="entry-form">
+      <h2 id="entry-title">Add food</h2>
+      <div id="entry-pick">
+        <input type="search" id="entry-search" placeholder="Search your foods" autocomplete="off">
+        <ul id="entry-results" class="list compact"></ul>
+        <button type="button" id="entry-new-food">+ Create a new food</button>
+      </div>
+      <div id="entry-amount" hidden>
+        <p id="entry-food-name" class="food-name"></p>
+        <div class="row">
+          <input type="number" id="entry-qty" min="0" step="any" inputmode="decimal" required>
+          <select id="entry-unit"></select>
+        </div>
+        <p id="entry-preview" class="muted"></p>
+      </div>
+      <div class="row end">
+        <button type="button" id="entry-delete" class="danger" hidden>Delete</button>
+        <button type="button" id="entry-cancel">Cancel</button>
+        <button type="submit" id="entry-save" class="primary" hidden>Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Create / edit a food -->
+  <dialog id="food-dialog">
+    <form method="dialog" id="food-form">
+      <h2 id="food-title">New food</h2>
+      <label>Name<input type="text" id="food-name" required></label>
+      <div class="grid">
+        <label>Values are per
+          <select id="food-basis">
+            <option value="100">100 g</option>
+            <option value="serving">1 serving</option>
+          </select>
+        </label>
+        <label>Serving size (g)<input type="number" id="food-serving-g" min="0" step="any" inputmode="decimal"></label>
+        <label>Serving name<input type="text" id="food-serving-label" placeholder="e.g. 1 slice"></label>
+      </div>
+      <p class="muted">Copy the numbers from the nutrition label. Leave unknown values empty.</p>
+      <div id="food-fields" class="grid"></div>
+      <div class="row end">
+        <button type="button" id="food-delete" class="danger" hidden>Delete</button>
+        <button type="button" id="food-cancel">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="foods.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
