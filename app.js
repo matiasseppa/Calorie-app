@@ -470,10 +470,14 @@ $("#targets-form").addEventListener("submit", (ev) => {
 
 // ---------- Backup ----------
 $("#export").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+  const json = JSON.stringify(state, null, 2);
+  const fileName = `food-tracker-${isoDate(new Date())}.json`;
+  // In the Android app, the native side saves the file.
+  if (window.Android) return window.Android.saveBackup(json, fileName);
+  const blob = new Blob([json], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
-  a.download = `food-tracker-${isoDate(new Date())}.json`;
+  a.download = fileName;
   a.click();
   URL.revokeObjectURL(a.href);
 });

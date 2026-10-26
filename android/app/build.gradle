@@ -1,0 +1,51 @@
+plugins {
+    id "com.android.application"
+}
+
+// The web app lives in the repository root; copy it into the APK's assets.
+def webAssets = layout.buildDirectory.dir("web")
+def copyWeb = tasks.register("copyWeb", Copy) {
+    from(rootProject.file("..")) {
+        include "*.html", "*.js", "*.css", "*.svg", "*.webmanifest"
+    }
+    into webAssets
+}
+
+android {
+    namespace "app.foodtracker"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "app.foodtracker"
+        minSdk 26
+        targetSdk 34
+        versionCode((System.getenv("VERSION_CODE") ?: "1").toInteger())
+        versionName "1.0.${System.getenv("VERSION_CODE") ?: "0"}"
+    }
+
+    // Fixed key so new builds install as updates over old ones (keeping your data).
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword "foodtracker"
+            keyAlias "foodtracker"
+            keyPassword "foodtracker"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    sourceSets.main.assets.srcDir(webAssets)
+}
+
+tasks.named("preBuild") { dependsOn copyWeb }

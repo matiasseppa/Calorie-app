@@ -25,3 +25,20 @@ It's plain HTML/CSS/JavaScript with no build step or dependencies.
   ```
 
 Hosted on any static host (e.g. GitHub Pages), it can be installed to a phone's home screen and works offline.
+
+## Android app (APK)
+
+`android/` wraps the same web app in a small native WebView app. Every push to GitHub builds it
+(see `.github/workflows/android.yml`) and publishes `FoodTracker.apk` as a GitHub release.
+The newest APK is always at:
+
+https://github.com/matiasseppa/Calorie-app/releases/latest/download/FoodTracker.apk
+
+Install it on your phone by opening that link and allowing "Install unknown apps" for your browser
+when Android asks. New builds install as updates and keep your data.
+
+The signing key (`android/app/release.keystore`, password `foodtracker`) is committed on purpose so
+that builds are always signed the same way. It is only meant for sideloading this personal app, not
+for publishing to the Play Store.
+
+To build locally you need the Android SDK and Gradle: `gradle -p android assembleRelease`.
