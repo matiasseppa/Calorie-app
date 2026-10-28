@@ -38,7 +38,7 @@
       </div>
 
       <details class="card">
-        <summary><h2>Micronutrients &amp; details</h2></summary>
+        <summary><h2>Vitamins, minerals &amp; details</h2></summary>
         <table id="details"></table>
       </details>
     </section>
@@ -59,7 +59,8 @@
     <section id="view-targets" class="view">
       <form class="card" id="targets-form">
         <h2>Daily targets</h2>
-        <div id="targets-fields" class="grid"></div>
+        <p class="muted small">Defaults: male, 22 years, 192 cm, 85 kg, moderately active. Set a target to 0 to hide its percentage.</p>
+        <div id="targets-fields"></div>
         <button type="submit" class="primary">Save targets</button>
       </form>
       <div class="card">
@@ -114,7 +115,7 @@
         <label>Serving name<input type="text" id="food-serving-label" placeholder="e.g. 1 slice"></label>
       </div>
       <p class="muted">Copy the numbers from the nutrition label. Leave unknown values empty.</p>
-      <div id="food-fields" class="grid"></div>
+      <div id="food-fields"></div>
       <div class="row end">
         <button type="button" id="food-delete" class="danger" hidden>Delete</button>
         <button type="button" id="food-cancel">Cancel</button>
@@ -123,7 +124,6 @@
     </form>
   </dialog>
 
-  <script src="foods.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

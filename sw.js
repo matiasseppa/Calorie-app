@@ -1,6 +1,6 @@
 // Caches the app files so it works offline. Bump the version when files change.
-const CACHE = "food-tracker-v1";
-const FILES = ["./", "index.html", "style.css", "app.js", "foods.js", "manifest.webmanifest", "icon.svg"];
+const CACHE = "food-tracker-v2";
+const FILES = ["./", "index.html", "style.css", "app.js", "manifest.webmanifest", "icon.svg"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)));

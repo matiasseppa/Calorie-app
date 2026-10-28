@@ -1,46 +1,102 @@
 "use strict";
 
 // ---------- Nutrients ----------
-// `limit: true` means the target is a maximum rather than a goal.
+// Default targets are for a 22-year-old, 192 cm, 85 kg, moderately active man:
+// calories from Mifflin-St Jeor (1945 kcal BMR × 1.55 activity), protein 1.6 g/kg,
+// fat 25% of calories, carbs the rest; vitamins and minerals from the US/Canadian
+// Dietary Reference Intakes (RDA or AI) for men 19–30.
+// `limit: true` means the target is a maximum; a target of 0 means none is set.
 const NUTRIENTS = [
-  { key: "kcal", label: "Calories", unit: "kcal", target: 2000 },
-  { key: "protein", label: "Protein", unit: "g", target: 50 },
-  { key: "carbs", label: "Carbs", unit: "g", target: 275 },
-  { key: "fat", label: "Fat", unit: "g", target: 78 },
-  { key: "fiber", label: "Fiber", unit: "g", target: 28 },
-  { key: "sugar", label: "Sugar", unit: "g", target: 50, limit: true },
-  { key: "satfat", label: "Saturated fat", unit: "g", target: 20, limit: true },
-  { key: "sodium", label: "Sodium", unit: "mg", target: 2300, limit: true },
-  { key: "potassium", label: "Potassium", unit: "mg", target: 4700 },
-  { key: "calcium", label: "Calcium", unit: "mg", target: 1300 },
-  { key: "iron", label: "Iron", unit: "mg", target: 18 },
-  { key: "vitc", label: "Vitamin C", unit: "mg", target: 90 },
-  { key: "vitd", label: "Vitamin D", unit: "µg", target: 20 },
+  { group: "Energy & macros", key: "kcal", label: "Calories", unit: "kcal", target: 3015 },
+  { group: "Energy & macros", key: "protein", label: "Protein", unit: "g", target: 136 },
+  { group: "Energy & macros", key: "carbs", label: "Carbs", unit: "g", target: 429 },
+  { group: "Energy & macros", key: "fiber", label: "Fiber", unit: "g", target: 38 },
+  { group: "Energy & macros", key: "sugar", label: "Sugar", unit: "g", target: 75, limit: true },
+  { group: "Energy & macros", key: "fat", label: "Fat", unit: "g", target: 84 },
+  { group: "Fats", key: "satfat", label: "Saturated fat", unit: "g", target: 33, limit: true },
+  { group: "Fats", key: "transfat", label: "Trans fat", unit: "g", target: 0, limit: true },
+  { group: "Fats", key: "monofat", label: "Monounsaturated fat", unit: "g", target: 0 },
+  { group: "Fats", key: "polyfat", label: "Polyunsaturated fat", unit: "g", target: 0 },
+  { group: "Fats", key: "omega3", label: "Omega-3 (ALA)", unit: "g", target: 1.6 },
+  { group: "Fats", key: "epadha", label: "Omega-3 (EPA + DHA)", unit: "mg", target: 250 },
+  { group: "Fats", key: "omega6", label: "Omega-6 (linoleic acid)", unit: "g", target: 17 },
+  { group: "Fats", key: "cholesterol", label: "Cholesterol", unit: "mg", target: 300, limit: true },
+  { group: "Vitamins", key: "vita", label: "Vitamin A", unit: "µg", target: 900 },
+  { group: "Vitamins", key: "vitc", label: "Vitamin C", unit: "mg", target: 90 },
+  { group: "Vitamins", key: "vitd", label: "Vitamin D", unit: "µg", target: 15 },
+  { group: "Vitamins", key: "vite", label: "Vitamin E", unit: "mg", target: 15 },
+  { group: "Vitamins", key: "vitk", label: "Vitamin K", unit: "µg", target: 120 },
+  { group: "Vitamins", key: "b1", label: "Thiamin (B1)", unit: "mg", target: 1.2 },
+  { group: "Vitamins", key: "b2", label: "Riboflavin (B2)", unit: "mg", target: 1.3 },
+  { group: "Vitamins", key: "b3", label: "Niacin (B3)", unit: "mg", target: 16 },
+  { group: "Vitamins", key: "b5", label: "Pantothenic acid (B5)", unit: "mg", target: 5 },
+  { group: "Vitamins", key: "b6", label: "Vitamin B6", unit: "mg", target: 1.3 },
+  { group: "Vitamins", key: "b7", label: "Biotin (B7)", unit: "µg", target: 30 },
+  { group: "Vitamins", key: "b9", label: "Folate (B9)", unit: "µg", target: 400 },
+  { group: "Vitamins", key: "b12", label: "Vitamin B12", unit: "µg", target: 2.4 },
+  { group: "Vitamins", key: "choline", label: "Choline", unit: "mg", target: 550 },
+  { group: "Minerals", key: "calcium", label: "Calcium", unit: "mg", target: 1000 },
+  { group: "Minerals", key: "phosphorus", label: "Phosphorus", unit: "mg", target: 700 },
+  { group: "Minerals", key: "magnesium", label: "Magnesium", unit: "mg", target: 400 },
+  { group: "Minerals", key: "sodium", label: "Sodium", unit: "mg", target: 2300, limit: true },
+  { group: "Minerals", key: "potassium", label: "Potassium", unit: "mg", target: 3400 },
+  { group: "Minerals", key: "chloride", label: "Chloride", unit: "mg", target: 2300 },
+  { group: "Minerals", key: "iron", label: "Iron", unit: "mg", target: 8 },
+  { group: "Minerals", key: "zinc", label: "Zinc", unit: "mg", target: 11 },
+  { group: "Minerals", key: "copper", label: "Copper", unit: "µg", target: 900 },
+  { group: "Minerals", key: "manganese", label: "Manganese", unit: "mg", target: 2.3 },
+  { group: "Minerals", key: "selenium", label: "Selenium", unit: "µg", target: 55 },
+  { group: "Minerals", key: "iodine", label: "Iodine", unit: "µg", target: 150 },
+  { group: "Minerals", key: "chromium", label: "Chromium", unit: "µg", target: 35 },
+  { group: "Minerals", key: "molybdenum", label: "Molybdenum", unit: "µg", target: 45 },
+  { group: "Minerals", key: "fluoride", label: "Fluoride", unit: "mg", target: 4 },
 ];
 const MACROS = ["protein", "carbs", "fat"];
+const GROUPS = [...new Set(NUTRIENTS.map((x) => x.group))];
+
+// Renders one labelled number input per nutrient, under group headings.
+function nutrientFields(labelFor) {
+  return GROUPS.map(
+    (g) => `<h3>${g}</h3><div class="grid">` +
+      NUTRIENTS.filter((x) => x.group === g)
+        .map((x) => `<label>${labelFor(x)}<input type="number" name="${x.key}" min="0" step="any" inputmode="decimal"${x.key === "kcal" ? " required" : ""}></label>`)
+        .join("") +
+      `</div>`
+  ).join("");
+}
 
 // ---------- Storage ----------
 const STORAGE_KEY = "food-tracker-v1";
+const DATA_VERSION = 2;
+
+function defaultTargets() {
+  return Object.fromEntries(NUTRIENTS.map((x) => [x.key, x.target]));
+}
 
 function defaultState() {
-  return {
-    foods: STARTER_FOODS.map(([name, servingG, servingLabel, values]) => ({
-      id: uid(),
-      name,
-      servingG,
-      servingLabel,
-      n: Object.fromEntries(NUTRIENTS.map((x, i) => [x.key, values[i]])),
-      used: 0,
-    })),
-    log: {},
-    targets: Object.fromEntries(NUTRIENTS.map((x) => [x.key, x.target])),
-  };
+  return { version: DATA_VERSION, foods: [], log: {}, targets: defaultTargets() };
+}
+
+// Version 1 shipped with pre-filled foods and generic targets. Remove those foods
+// (unless edited) and switch to the new default targets.
+const OLD_STARTER_FOODS = "Egg, whole, raw|143;Chicken breast, skinless, cooked|165;Ground beef 85% lean, cooked|250;Salmon, Atlantic, cooked|206;Tuna, light, canned in water, drained|116;Tofu, firm|144;Milk, 2%|50;Greek yogurt, plain, nonfat|59;Cheddar cheese|403;Butter, salted|717;Olive oil|884;Oats, rolled, dry|379;White rice, cooked|130;Brown rice, cooked|123;Pasta, cooked|158;Whole wheat bread|252;Potato, baked, with skin|93;Sweet potato, baked|90;Black beans, cooked|132;Lentils, cooked|116;Banana|89;Apple, with skin|52;Orange|47;Strawberries|32;Blueberries|57;Avocado|160;Broccoli, raw|34;Spinach, raw|23;Carrot, raw|41;Tomato, raw|18;Almonds|579;Peanut butter, smooth|588";
+
+function migrate(s) {
+  if (!s.version || s.version < 2) {
+    const starter = new Set(OLD_STARTER_FOODS.split(";"));
+    s.foods = s.foods.filter((f) => !starter.has(`${f.name}|${f.n.kcal}`));
+    s.targets = defaultTargets();
+    s.version = 2;
+  }
+  // Nutrients added later get their default target.
+  for (const x of NUTRIENTS) if (!(x.key in s.targets)) s.targets[x.key] = x.target;
+  return s;
 }
 
 function load() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) return migrate(JSON.parse(raw));
   } catch (e) {
     console.error(e);
   }
@@ -176,18 +232,21 @@ function renderLog() {
         .join("")
     : `<li class="empty muted">Nothing logged for this day.</li>`;
 
-  $("#details").innerHTML =
-    `<tr><th>Nutrient</th><th>Total</th><th>Target</th><th></th></tr>` +
-    NUTRIENTS.map((x) => {
-      const target = targets[x.key];
-      const pct = target ? Math.round((t[x.key] / target) * 100) : 0;
-      return `<tr>
-        <td>${x.label}${x.limit ? ' <span class="muted small">(max)</span>' : ""}</td>
-        <td>${fmt(t[x.key])} ${x.unit}</td>
-        <td class="muted">${fmt(target)} ${x.unit}</td>
-        <td class="pct ${x.limit && pct > 100 ? "over-text" : ""}">${pct}%</td>
-      </tr>`;
-    }).join("");
+  $("#details").innerHTML = GROUPS.map(
+    (g) => `<tr class="group"><th colspan="4">${g}</th></tr>` +
+      NUTRIENTS.filter((x) => x.group === g)
+        .map((x) => {
+          const target = targets[x.key];
+          const pct = target ? Math.round((t[x.key] / target) * 100) : null;
+          return `<tr>
+            <td>${x.label}${x.limit ? ' <span class="muted small">(max)</span>' : ""}</td>
+            <td>${fmt(t[x.key])} ${x.unit}</td>
+            <td class="muted">${target ? fmt(target) + " " + x.unit : "–"}</td>
+            <td class="pct ${x.limit && pct > 100 ? "over-text" : ""}">${pct === null ? "" : pct + "%"}</td>
+          </tr>`;
+        })
+        .join("")
+  ).join("");
 }
 
 function openEntryFromList(ev) {
@@ -215,7 +274,7 @@ function renderEntryResults() {
     ? foods
         .map((f) => `<li data-id="${f.id}" tabindex="0"><span>${esc(f.name)}</span><span class="muted small">${fmt(f.n.kcal)} kcal/100 g</span></li>`)
         .join("")
-    : `<li class="empty muted">No matching foods.</li>`;
+    : `<li class="empty muted">${state.foods.length ? "No matching foods." : "Your food list is empty. Create a food first."}</li>`;
 }
 
 function showEntryStep(step) {
@@ -352,7 +411,7 @@ function renderFoods() {
           </li>`
         )
         .join("")
-    : `<li class="empty muted">No foods yet.</li>`;
+    : `<li class="empty muted">No foods yet. Tap “+ New food” and copy the values from a nutrition label.</li>`;
 }
 
 $("#food-filter").addEventListener("input", renderFoods);
@@ -370,9 +429,7 @@ let editingFood = null;
 let afterFoodSave = null;
 let foodBasis = "100";
 
-$("#food-fields").innerHTML = NUTRIENTS.map(
-  (x) => `<label>${x.label} (${x.unit})<input type="number" name="${x.key}" min="0" step="any" inputmode="decimal"${x.key === "kcal" ? " required" : ""}></label>`
-).join("");
+$("#food-fields").innerHTML = nutrientFields((x) => `${x.label} (${x.unit})`);
 
 function openFoodDialog(food, onSave) {
   editingFood = food;
@@ -448,9 +505,7 @@ $("#food-delete").addEventListener("click", () => {
 });
 
 // ---------- Targets view ----------
-$("#targets-fields").innerHTML = NUTRIENTS.map(
-  (x) => `<label>${x.label} (${x.unit})${x.limit ? " max" : ""}<input type="number" name="${x.key}" min="0" step="any" inputmode="decimal"></label>`
-).join("");
+$("#targets-fields").innerHTML = nutrientFields((x) => `${x.label} (${x.unit})${x.limit ? " max" : ""}`);
 
 function renderTargets() {
   for (const x of NUTRIENTS) $(`#targets-fields [name="${x.key}"]`).value = state.targets[x.key] ?? "";
@@ -490,7 +545,7 @@ $("#import").addEventListener("change", async (ev) => {
     const data = JSON.parse(await file.text());
     if (!Array.isArray(data.foods) || typeof data.log !== "object" || typeof data.targets !== "object") throw new Error("Not a backup file");
     if (!confirm("Replace all current data with this backup?")) return;
-    state = data;
+    state = migrate(data);
     save();
     renderLog();
     renderTargets();
